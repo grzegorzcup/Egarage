@@ -1,0 +1,39 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider IsDarkMode= "darkMode" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="(() => ToggleDrawer())"/>
+            <MudText Typo="Typo.h5" Class="ml-3">Egarage</MudText>
+            <MudSpacer/>
+            <MudToggleIconButton @bind-Toggled="darkMode" Icon="@Icons.Material.Filled.LightMode" Color="Color.Inherit" ToggledIcon="@Icons.Material.Filled.DarkMode" ToggledColor="Color.Inherit" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="drawrOpen" ClipMode="DrawerClipMode.Always" Elevation="5">
+        <MudNavMenu>
+            <MudNavLink Href="/" Match="NavLinkMatch.All">Garaże</MudNavLink>
+            <MudNavLink Href="/trasy" Match="NavLinkMatch.All">Trasy</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@code
+{
+    bool drawrOpen = true;
+    bool darkMode = false;
+
+    void ToggleDrawer()
+    {
+        drawrOpen = !drawrOpen;
+    }
+
+    void ToggleDarkMode()
+    {
+        darkMode = !darkMode;
+    }
+}
