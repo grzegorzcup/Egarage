@@ -54,4 +54,8 @@
         <PackageReference Include="MudBlazor" Version="6.11.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Egarage.Shared\Egarage.Shared.csproj" />
+    </ItemGroup>
+
 </Project>

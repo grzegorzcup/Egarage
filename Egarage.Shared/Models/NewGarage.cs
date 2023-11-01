@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Egarage.Shared.Models
 {
-    public record NewGarage( string? Name, Guid? CategoryId);
+    public record NewGarage( string? Name, string? Description, Guid? OrderId);
 }

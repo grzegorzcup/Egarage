@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Desktop.Shared.Services;
+using Egarage.Shared.Services;
+using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
 
 namespace Desktop
@@ -16,6 +18,8 @@ namespace Desktop
                 });
 
             builder.Services.AddMauiBlazorWebView();
+
+            builder.Services.AddTransient<IGarageService,GarageService>();
 
             builder.Services.AddMudServices();
 

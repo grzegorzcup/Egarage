@@ -13,11 +13,11 @@ namespace Egarage.Shared.Services
         Task Create(NewGarage data);
         Task CreateOrder(NewOrder order);
         Task Remove(Guid garageId);
-        Task ChangeStatus(Guid garageId, string status);
+        Task ChangeStatus(Guid garageId, Status status);
         //Task ChangeOrder(Guid garageId, Guid orderId);
-        Task<IEnumerable<GarageModel>> GetAll(Guid? withCategory);
+        Task<IEnumerable<GarageModel>> GetAll(Guid? withOrders);
         //Task<IEnumerable<GarageModel>> GetWithStatus(Status status);
         Task<IEnumerable<Order>> GetOrders();
-        Task<Order?> GetOrder(Guid categoryId);
+        Task<Order?> GetOrder(Guid OrderId);
     }
 }
