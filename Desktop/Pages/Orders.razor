@@ -1,1 +1,47 @@
 ﻿@page "/orders"
+@using Desktop.Components.Dialogs;
+
+@inject IDialogService DialogService
+@inject IGarageService GarageService
+
+<MudGrid>
+    <MudItem sm="12" md="6" lg="4">
+        <MudButton OnClick="OpenNewOrderDialog" StartIcon="@Icons.Material.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Dodaj Trasę</MudButton>
+        @foreach(var order in OrderList)
+        {
+            <MudPaper Elevation="25" Class="pa-3 rounded-lg my-2">
+                <MudLink Href="@("/" + order.Id)">
+                    <MudText Typo="Typo.h6">@order.Name</MudText>    
+                </MudLink>
+                <MudButton Style="@($"background-color: {order.Color}")" Class="py-2" />
+            </MudPaper>
+        }
+    </MudItem>
+</MudGrid>
+
+@code{
+    private IEnumerable<Order> OrderList { get; set; } = new List<Order>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task OpenNewOrderDialog()
+    {
+        var dialog = await DialogService.ShowAsync<NewOrderDialog>();
+        var result = await dialog.Result;
+
+        if(result.Data is not null)
+        {
+            await GarageService.CreateOrder(result.Data as NewOrder);
+            LoadData();
+        }
+    }
+
+    private async Task LoadData()
+    {
+        OrderList = await GarageService.GetOrders();
+        StateHasChanged();
+    }
+}

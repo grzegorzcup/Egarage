@@ -1,0 +1,58 @@
+﻿@using System.ComponentModel.DataAnnotations;
+
+<EditForm Model="@model" OnSubmit="Submit">
+    <DataAnnotationsValidator />
+    <MudDialog>
+        <TitleContent>
+            <MudText Typo="Typo.h6">
+                Dodaj Garaż
+            </MudText>
+        </TitleContent>
+        <DialogContent>
+            <MudTextField Label="Title" @bind-Value="model.Title" For="(() => model.Title)" />
+            <MudTextField Label="Description" @bind-Value="model.Description" For="(() => model.Description)" Lines="3" />
+                <MudSelect Label="Order" @bind-Value="model.OrderId">
+                    <MudSelectItem T="Guid?" Value="@Guid.Empty">---</MudSelectItem>
+                @foreach(var order in Orders)
+                {
+                    <MudSelectItem T="Guid?" Value="@order.Id">@order.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Class="px-10" >Dodaj</MudButton>
+            <MudButton OnClick="Cancel" Variant="Variant.Filled" Color="Color.Secondary"  Class="px-10" >Wróć</MudButton>
+        </DialogActions>
+    </MudDialog>
+
+</EditForm>
+
+@code{
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public IEnumerable<Order> Orders { get; set; } = new List<Order>();
+
+    private NewGarageForm model = new NewGarageForm();
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private void Submit(EditContext context)
+    {
+        if (context.Validate())
+        {
+            MudDialog.Close<NewGarage>(new NewGarage(model.Title,model.Description,model.OrderId == Guid.Empty ? null : model.OrderId));
+        }
+    }
+
+    internal class NewGarageForm
+    {
+        [Required]
+        public string Title { get; set; }
+        public string? Description { get; set; }
+        public Guid? OrderId { get; set; }
+
+    }
+}

@@ -1,1 +1,9 @@
-﻿@page "/"
+﻿@page "/{OrderId:guid?}"
+
+<CascadingValue Value="OrderId">
+
+</CascadingValue>
+
+@code{
+    [Parameter] public Guid? OrderId { get; set; }
+}

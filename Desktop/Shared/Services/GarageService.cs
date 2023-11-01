@@ -8,7 +8,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Egarage.Shared.Enums;
-using static CoreFoundation.DispatchSource;
 
 namespace Desktop.Shared.Services
 {
@@ -17,6 +16,7 @@ namespace Desktop.Shared.Services
         private List<GarageModel> garages = new List<GarageModel>();
         private List<Order> orders = new List<Order>();
         private readonly IJSRuntime _jSRuntime;
+        private readonly IFileSystem _fileSystem;
 
         public GarageService(IJSRuntime jSRuntime)
         {
