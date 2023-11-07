@@ -1,0 +1,85 @@
+﻿@using Desktop.Components.Dialogs;
+@inject IDialogService DialogService
+@inject IGarageService GarageService
+
+
+@code {
+    private List<GarageItem> Garages { get; set; } = new List<GarageItem>();
+    private bool ShowDone { get; set; } = false;
+    private string? OrderName { get; set; }
+
+    [CascadingParameter] Guid? OrderId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task OnDrop(MudItemDropInfo<GarageItem> drop)
+    {
+        drop.Item.Status = drop.DropzoneIdentifier;
+        await GarageService.ChangeStatus(drop.Item.Id, Enum.Parse<Status>(drop.DropzoneIdentifier));
+    }
+
+    private async Task Finish(GarageItem garage)
+    {
+        await GarageService.ChangeStatus(garage.Id, Status.Done);
+        await LoadData();
+    }
+
+    private async Task Remove(GarageItem garage)
+    {
+        await GarageService.Remove(garage.Id);
+        await LoadData();
+    }
+
+    private async Task OpenNewGarageDialog()
+    {
+        var orders = await GarageService.GetOrders();
+        var parameters = new DialogParameters<NewGarageDialog> { { x => x.Orders, orders } };
+        var dialog = await DialogService.ShowAsync<NewGarageDialog>("", parameters);
+        var result = await dialog.Result;
+
+        if(result.Data is not null)
+        {
+            await GarageService.Create(result.Data as NewGarage);
+            await LoadData();
+        }
+    }
+
+    private string GetBackground(GarageItem garage)=>
+        "width: 24px; " + (garage.Order is null ? "background-color: #fff" : $"background-color: {garage.Order.Color}");
+
+
+    private async Task LoadData()
+    {
+        Garages = (await GarageService.GetAll(OrderId)).Select(x => new GarageItem
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                Order = x.Order,
+                Status = x.Status.ToString()
+            }).ToList();
+
+        if (OrderId is not null)
+        {
+            var order = await GarageService.GetOrder(OrderId.Value);
+            OrderName = order?.Name;
+        }
+        StateHasChanged();
+    }
+
+    public class GarageItem
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public string? Description { get; set; }
+        public Order? Order { get; set; }
+        public string Status { get; set; }
+    }
+}
