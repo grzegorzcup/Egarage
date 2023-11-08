@@ -87,7 +87,7 @@ namespace Desktop.Shared.Services
             await LoadData();
 
             var garageToRemove = garages.FirstOrDefault(x =>x.Id == garageId);
-            if (garageToRemove != null)
+            if (garageToRemove is not null)
                 return;
             garages.Remove(garageToRemove);
             await SaveData();

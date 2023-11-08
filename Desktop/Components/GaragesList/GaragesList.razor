@@ -2,6 +2,74 @@
 @inject IDialogService DialogService
 @inject IGarageService GarageService
 
+@if(OrderId is not null)
+{
+    <MudText Typo="Typo.h5" Color="@Color.Inherit" Class="my-3 mx-2">Garaże w zamówieniu @OrderName</MudText>
+}
+
+<MudDropContainer T="GarageItem" Items="Garages" ItemsSelector="@((item,column)=> item.Status == column)" ItemDropped="@((item)=> OnDrop(item))" Class="d-flex flex-wrap flex-grow-1">
+    <ChildContent>
+        <MudGrid>
+            <MudItem sm="12" md="6">
+                <MudDropZone T="GarageItem" Identifier="@Status.ToDO.ToString()" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1" Style="min-height: 400px">
+                    <MudText Typo="Typo.h6"><b>Do Zatwierdzenia</b></MudText>
+                    <MudButton OnClick="OpenNewGarageDialog" StartIcon="@Icons.Material.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Dodaj garaż</MudButton>
+                </MudDropZone>
+            </MudItem>
+            <MudItem sm="12" md="6">
+                <MudDropZone T="GarageItem" Identifier="@Status.InProgres.ToString()" Class="rounded mud-background-gray pa-6 ma-8 flex-grow-1" Style="min-height: 400px">
+                    <MudText Typo="Typo.h6"><b>Dodane</b></MudText>
+                </MudDropZone>
+            </MudItem>
+        </MudGrid>
+    </ChildContent>
+    <ItemRenderer>>
+        <MudPaper Elevation="25" Class="pa-3 rounded-lg my-2 d-flex justify-space-betwen">
+            <div class="ps-1 me-2" style="@(GetBackground(context))">
+            </div>
+            <div>
+                <MudText Typo="Typo.h6">@context.Title</MudText>
+                <MudText Typo="Typo.body2">@context.Description</MudText>
+            </div>
+            <div>
+                @if(context.Status == Status.InProgres.ToString())
+                {
+                    <MudIconButton OnClick="@(()=> Finish(context))" Icon="@Icons.Material.Filled.Done" Variant="Variant.Filled" Color="Color.Success" Size="Size.Large"></MudIconButton>
+                }
+                else
+                {
+                    <MudIconButton OnClick="@(()=> Remove(context))" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" Color="Color.Error" Size="Size.Small"></MudIconButton>
+                }
+            </div>
+        </MudPaper>
+    </ItemRenderer>
+</MudDropContainer>
+
+<MudPaper Elevation="0" Class="mx-4">
+    <MudSwitch @bind-Checked="ShowDone">Pokaż zatwierdzone trasy</MudSwitch>
+
+    @if (ShowDone)
+    {
+        <MudGrid>
+            <MudItem sm="12">
+                <MudPaper Elevation="0">
+                    <MudText Typo="Typo.h6"><b>Zatwierdzone</b></MudText>
+                    @foreach (var garage in Garages.Where(x=> x.Status == Status.Done.ToString()))
+                    {
+                        <MudPaper Elevation="25" Class="pa-3 rounded-lg my-2 d-flex justify-start">
+                            <div class="ps-1 me-2" style="@(GetBackground(garage))">
+                            </div>
+                            <div>
+                                <MudText Typo="Typo.h6">@garage.Title</MudText>
+                                <MudText Typo="Typo.body2">@garage.Description</MudText>
+                            </div>
+                        </MudPaper>
+                    }
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    }
+</MudPaper>
 
 @code {
     private List<GarageItem> Garages { get; set; } = new List<GarageItem>();

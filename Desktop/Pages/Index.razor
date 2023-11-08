@@ -1,7 +1,8 @@
 ﻿@page "/{OrderId:guid?}"
+@using Desktop.Components.GaragesList
 
 <CascadingValue Value="OrderId">
-
+    <GaragesList />
 </CascadingValue>
 
 @code{
